@@ -1509,6 +1509,8 @@ public abstract class JsonParser
         return (T) codec.readTree(this);
     }
 
+    public abstract String find(String name) throws IOException;
+
     /*
     /**********************************************************
     /* Internal methods

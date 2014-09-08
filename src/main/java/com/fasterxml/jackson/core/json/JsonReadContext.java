@@ -172,6 +172,11 @@ public final class JsonReadContext
         return (_type != TYPE_ROOT && ix > 0);
     }
 
+    public int getType()
+    {
+        return _type;
+    }
+
     public void setCurrentName(String name) throws JsonProcessingException
     {
         _currentName = name;

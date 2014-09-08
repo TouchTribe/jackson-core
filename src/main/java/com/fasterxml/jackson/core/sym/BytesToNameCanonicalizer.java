@@ -997,7 +997,10 @@ public final class BytesToNameCanonicalizer
      */
     private void unshareMain() {
         final int[] old = _hash;
-        _hash = Arrays.copyOf(old, old.length);
+        int length = old.length;
+        _hash = new int[length];
+        System.arraycopy(old, 0, _hash, 0, length);
+
         _hashShared = false;
     }
 
@@ -1006,20 +1009,22 @@ public final class BytesToNameCanonicalizer
         if (old == null) {
             _collList = new Bucket[INITIAL_COLLISION_LEN];
         } else {
-            _collList = Arrays.copyOf(old, old.length);
+            int length = old.length;
+            _collList = new Bucket[length];
+            System.arraycopy(old, 0, _collList, 0, length);
         }
         _collListShared = false;
     }
 
     private void unshareNames() {
         final Name[] old = _mainNames;
-        _mainNames = Arrays.copyOf(old, old.length);
+        _mainNames = com.fasterxml.jackson.core.Arrays.copyOf(old, old.length);
         _namesShared = false;
     }
 
     private void expandCollision() {
         final Bucket[] old = _collList;
-        _collList = Arrays.copyOf(old, old.length * 2);
+        _collList = com.fasterxml.jackson.core.Arrays.copyOf(old, old.length * 2);
     }
 
     /*

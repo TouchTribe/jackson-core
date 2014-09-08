@@ -103,7 +103,9 @@ public class UTF8StreamJsonParser
      * buffer.
      */
     protected boolean _bufferRecyclable;
-    
+
+    protected UTF8StreamJsonParser _cache;
+
     /*
     /**********************************************************
     /* Life-cycle
@@ -128,6 +130,12 @@ public class UTF8StreamJsonParser
         _bufferRecyclable = bufferRecyclable;
     }
 
+    protected UTF8StreamJsonParser()
+    {
+        super(null, 0);
+        _symbols = null;
+    }
+
     @Override
     public ObjectCodec getCodec() {
         return _objectCodec;
@@ -137,8 +145,52 @@ public class UTF8StreamJsonParser
     public void setCodec(ObjectCodec c) {
         _objectCodec = c;
     }
-    
-    /*
+
+    @Override
+    public String find(String name) throws IOException
+    {
+        _cache = new UTF8StreamJsonParser();
+        _cache._inputPtr = _inputPtr;
+        _cache._currInputRow = _currInputRow;
+        _cache._currInputProcessed = _currInputProcessed;
+        _cache._currInputRowStart = _currInputRowStart;
+        _cache._currToken = _currToken;
+        _cache._nextToken = _nextToken;
+        _cache._parsingContext = new JsonReadContext(_parsingContext._parent, _parsingContext._dups, _parsingContext.getType(), _parsingContext._lineNr, _parsingContext._columnNr);
+
+        String value = null;
+        int open = 1;
+        while (true) {
+            JsonToken t = nextToken();
+            if (t == null) {
+                break;
+            }
+            String tmp = getCurrentName();
+            if (open == 1 && tmp != null && tmp.equals(name) && t == JsonToken.FIELD_NAME) {
+                nextToken();
+                value = getValueAsString();
+                break;
+            }
+            if (t.isStructStart()) {
+                ++open;
+            } else if (t.isStructEnd()) {
+                if (--open == 0) {
+                    break;
+                }
+            }
+        }
+
+        _inputPtr = _cache._inputPtr;
+        _currInputRow = _cache._currInputRow;
+        _currInputProcessed = _cache._currInputProcessed;
+        _currInputRowStart = _cache._currInputRowStart;
+        _currToken = _cache._currToken;
+        _nextToken = _cache._nextToken;
+        _parsingContext.reset(_cache._parsingContext.getType(), _cache._parsingContext._lineNr, _cache._parsingContext._columnNr);
+        return value;
+   }
+
+/*
     /**********************************************************
     /* Overrides for life-cycle
     /**********************************************************
@@ -3129,7 +3181,7 @@ public class UTF8StreamJsonParser
         if (arr == null) {
             return new int[more];
         }
-        return Arrays.copyOf(arr, arr.length + more);
+        return com.fasterxml.jackson.core.Arrays.copyOf(arr, arr.length + more);
     }
 
     /*

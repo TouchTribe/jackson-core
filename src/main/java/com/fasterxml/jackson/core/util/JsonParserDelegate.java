@@ -199,4 +199,12 @@ public class JsonParserDelegate extends JsonParser
     @Override public boolean canReadTypeId() { return delegate.canReadTypeId(); }
     @Override public Object getObjectId() throws IOException, JsonGenerationException { return delegate.getObjectId(); }
     @Override public Object getTypeId() throws IOException, JsonGenerationException { return delegate.getTypeId(); }
+
+    @Override
+    public String find(String name) throws IOException
+    {
+        throw new UnsupportedOperationException();
+    }
 }
+
+

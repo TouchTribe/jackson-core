@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.core.io;
 
-import java.util.Arrays;
-
+import com.fasterxml.jackson.core.Arrays;
 import com.fasterxml.jackson.core.SerializableString;
 
 /**

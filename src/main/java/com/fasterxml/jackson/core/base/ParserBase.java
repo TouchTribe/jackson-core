@@ -286,7 +286,7 @@ public abstract class ParserBase
         super();
         _features = features;
         _ioContext = ctxt;
-        _textBuffer = ctxt.constructTextBuffer();
+        _textBuffer = ctxt != null ? ctxt.constructTextBuffer() : null;
         DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION.enabledIn(features)
                 ? DupDetector.rootDetector(this) : null;
         JsonReadContext readCtxt = JsonReadContext.createRootContext(dups);
@@ -711,6 +711,11 @@ public abstract class ParserBase
             }
         }
         return _numberBigDecimal;
+    }
+
+    public String find(String name) throws IOException
+    {
+        throw new UnsupportedOperationException("Not supported");
     }
 
     /*
